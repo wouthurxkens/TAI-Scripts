@@ -20,8 +20,8 @@ jobs:
           git clone https://github.com/cqb13/ti-tools.git
           cd ti-tools
           cargo build --release
-          # Move the binary to a known path for easier access
-          mv target/release/ti-tools8x ../ti-tools8x
+          # Move the binary to the root for easier access
+          mv target/release/ti-tools ../ti-tools-bin
           cd ..
 
       - name: Create bin directory
@@ -29,12 +29,21 @@ jobs:
 
       - name: Compile .txt to .8xp
         run: |
-          # Use the freshly built Rust binary
-          for file in src/*.txt; do
-            filename=$(basename "$file" .txt)
-            echo "Compiling $file to bin/$filename.8xp"
-            ./ti-tools8x conv-prog "$file" "bin/$filename.8xp"
-          done
+          # Ensure the src directory exists
+          if [ -d "src" ]; then
+            for file in src/*.txt; do
+              # Check if files actually exist to avoid loop errors
+              [ -e "$file" ] || continue
+              
+              filename=$(basename "$file" .txt)
+              echo "Compiling $file to bin/$filename.8xp..."
+              
+              # Execute the conversion
+              ./ti-tools-bin conv-prog "$file" "bin/$filename.8xp"
+            done
+          else
+            echo "No src directory found. Skipping compilation."
+          fi
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
