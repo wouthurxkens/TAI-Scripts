@@ -1,0 +1,8 @@
+ClrHome
+" ABCDEFGHIJKLMNOPQRSTUVWXYZ"->Str1
+":"->Str5
+
+Input "Key: ",Str2
+String>Equ(Str2,{Y1})
+Input "Text: ",Str3
+length(Str1)->M
