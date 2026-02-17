@@ -1,0 +1,31 @@
+name: Compile TI-BASIC
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install compiler
+        run: pip install -r requirements.txt
+
+      - name: Compile programs
+        run: |
+          mkdir -p bin
+          for file in src/*.txt; do
+            filename=$(basename "$file" .txt)
+            basically-ti-basic -c -i "$file" -o "bin/${filename}.8xp"
+          done
+
+      - name: Commit and Push .8xp files
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Auto-compile TI-BASIC programs to .8xp"
+          file_pattern: 'bin/*.8xp'
