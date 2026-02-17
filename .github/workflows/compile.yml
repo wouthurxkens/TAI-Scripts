@@ -20,7 +20,6 @@ jobs:
           git clone https://github.com/cqb13/ti-tools.git
           cd ti-tools
           cargo build --release
-          # Move the binary to the root for easier access
           mv target/release/ti-tools ../ti-tools-bin
           cd ..
 
@@ -29,20 +28,19 @@ jobs:
 
       - name: Compile .txt to .8xp
         run: |
-          # Ensure the src directory exists
           if [ -d "src" ]; then
+            # The nullglob prevents the loop from running if no .txt files exist
+            shopt -s nullglob
             for file in src/*.txt; do
-              # Check if files actually exist to avoid loop errors
-              [ -e "$file" ] || continue
-              
               filename=$(basename "$file" .txt)
-              echo "Compiling $file to bin/$filename.8xp..."
+              echo "Converting $file to bin/$filename.8xp..."
               
-              # Execute the conversion
-              ./ti-tools-bin conv-prog "$file" "bin/$filename.8xp"
+              # Using the 'convert' command per your help output
+              ./ti-tools-bin convert "$file" -o "bin/$filename.8xp"
             done
           else
-            echo "No src directory found. Skipping compilation."
+            echo "Directory ./src not found."
+            exit 1
           fi
 
       - name: Upload Artifacts
