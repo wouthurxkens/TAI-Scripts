@@ -2,6 +2,8 @@
 
 This repository contains TI-BASIC programs for the course "Toepassingen van de algebra in de informatica" at KU Leuven.
 
+![Compile TI-BASIC](https://github.com/wouthurxkens/TAI-Scripts/actions/workflows/compile.yml/badge.svg)
+
 ## Installation
 1. Download the `.8xp` files from the `/bin` folder.
 2. Transfer them to your calculator using TI Connect CE.
