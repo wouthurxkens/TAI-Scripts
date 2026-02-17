@@ -2,7 +2,6 @@ name: Compile TI-84 Files
 
 on:
   push:
-    # This triggers on every push to every branch
   workflow_dispatch:
 
 jobs:
@@ -16,23 +15,22 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.10' # Stable version
 
-      - name: Install ti-tools
+      - name: Clone ti-tools
         run: |
-          python -m pip install --upgrade pip
-          pip install git+https://github.com/cqb13/ti-tools
+          git clone https://github.com/cqb13/ti-tools.git ./ti-tools-repo
 
       - name: Create bin directory
         run: mkdir -p bin
 
       - name: Compile .txt to .8xp
         run: |
-          # The loop handles multiple files and uses '->' safely
           for file in src/*.txt; do
             filename=$(basename "$file" .txt)
             echo "Compiling $file..."
-            ti-tools8x conv-prog "$file" "bin/$filename.8xp"
+            # Call the script directly from the cloned repo
+            python3 ./ti-tools-repo/ti-tools8x/conv-prog.py "$file" "bin/$filename.8xp"
           done
 
       - name: Upload Artifacts
