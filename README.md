@@ -1,4 +1,16 @@
-# TAI-Scripts
-This repository contains TI-BASIC programs developed for the course "Toepassingen van de algebra in de informatica [G0D68a]" at KU Leuven.
+# TAI Scripts (G0D68a)
 
-The scripts provided here are intended for educational support and algebraic applications within the scope of the curriculum. While these tools are public, they are provided as-is. The author is not responsible for any errors, bugs, or incorrect outputs. Users are advised to verify all results and use these programs at their own risk.
+This repository contains TI-BASIC programs for the course "Toepassingen van de algebra in de informatica" at KU Leuven.
+
+## Installation
+1. Download the `.8xp` files from the `/bin` folder.
+2. Transfer them to your calculator using TI Connect CE.
+
+## Disclaimer
+These programs are provided for educational support.
+* The author is not responsible for errors, bugs, or incorrect exam results.
+* Always verify your manual calculations.
+* Use at your own risk.
+
+## License
+Distributed under the MIT License. See `LICENSE` for more information.
