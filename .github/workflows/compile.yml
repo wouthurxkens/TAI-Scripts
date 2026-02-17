@@ -1,4 +1,4 @@
-name: Compile TI-BASIC
+name: Compile TI-BASIC with Convhex
 on: [push]
 
 jobs:
@@ -8,24 +8,31 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
-
-      - name: Install compiler
-        run: pip install -r requirements.txt
+      - name: Install GCC and Build Convhex
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc curl
+          # Download the convhex source directly
+          curl -L https://raw.githubusercontent.com/KermMartian/convhex/master/convhex.c -o convhex.c
+          # Compile the tool
+          gcc -O3 convhex.c -o convhex
+          sudo mv convhex /usr/local/bin/
 
       - name: Compile programs
         run: |
           mkdir -p bin
+          # Loop through all .txt files in src/
           for file in src/*.txt; do
+            # Get the base name without extension
             filename=$(basename "$file" .txt)
-            basically-ti-basic -c -i "$file" -o "bin/${filename}.8xp"
+            
+            # Convhex uses -v for TI-84 Plus CE (Z80) tokens
+            # It automatically maps -> to the Store arrow
+            convhex -v "$file" "bin/${filename}.8xp"
           done
 
       - name: Commit and Push .8xp files
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Auto-compile TI-BASIC programs to .8xp"
+          commit_message: "Auto-compile TI-BASIC programs via Convhex"
           file_pattern: 'bin/*.8xp'
