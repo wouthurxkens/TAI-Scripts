@@ -21,7 +21,7 @@ jobs:
           mkdir -p bin
           for file in src/*.txt; do
             filename=$(basename "$file" .txt)
-            basically-ti-basic -c -i "$file" -o "bin/${filename}.8xp"
+            basically-ti-basic -c --target ti84pce -i "$file" -o "bin/${filename}.8xp"
           done
 
       - name: Commit and Push .8xp files
