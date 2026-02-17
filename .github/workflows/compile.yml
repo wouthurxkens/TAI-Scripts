@@ -2,7 +2,7 @@ name: Compile TI-84 Files
 
 on:
   push:
-    branches: [ "main" ]
+    # This triggers on every push to every branch
   workflow_dispatch:
 
 jobs:
@@ -28,10 +28,10 @@ jobs:
 
       - name: Compile .txt to .8xp
         run: |
+          # The loop handles multiple files and uses '->' safely
           for file in src/*.txt; do
-            # Extract filename without extension
             filename=$(basename "$file" .txt)
-            echo "Compiling $file to bin/$filename.8xp"
+            echo "Compiling $file..."
             ti-tools8x conv-prog "$file" "bin/$filename.8xp"
           done
 
