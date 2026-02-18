@@ -1,4 +1,0 @@
-:Disp "Hello world"
-:Prompt A
-:A^2→B
-:Disp "Result is:",B 
