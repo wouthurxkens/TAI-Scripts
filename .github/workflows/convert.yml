@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'src/**.txt'
+#    paths:
+#     - 'src/**.txt'
   workflow_dispatch:
 
 jobs:
