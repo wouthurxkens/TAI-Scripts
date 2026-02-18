@@ -17,7 +17,7 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install tivars library
+      - name: Install tivars
         run: pip install tivars
 
       - name: Create bin directory
@@ -25,16 +25,32 @@ jobs:
 
       - name: Compile .txt to .8xp
         run: |
-          shopt -s nullglob
-          for file in src/*.txt; do
-            filename=$(basename "$file" .txt)
-            echo "Compiling $file..."
-            # Invokes the tokenizer directly to convert text to 8xp
-            python3 -m tivars.tokenizer "$file" -o "bin/$filename.8xp"
-          done
+          python3 <<os.environ['PYTHON_SCRIPT']
+          import os
+          from tivars.types import TIProgram
+
+          src_dir = 'src'
+          bin_dir = 'bin'
+
+          for filename in os.listdir(src_dir):
+              if filename.endswith('.txt'):
+                  # Read your plain text file
+                  with open(os.path.join(src_dir, filename), 'r') as f:
+                      content = f.read()
+                  
+                  # Create a TI Program entry
+                  # The library automatically tokenizes the string
+                  name = os.path.splitext(filename)[0][:8].upper()
+                  prgm = TIProgram(content, name=name)
+                  
+                  # Save as .8xp
+                  output_path = os.path.join(bin_dir, f"{os.path.splitext(filename)[0]}.8xp")
+                  prgm.save(output_path)
+                  print(f"Compiled {filename} -> {output_path}")
+          os.environ['PYTHON_SCRIPT']
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: compiled-8xp-files
+          name: compiled-programs
           path: bin/
