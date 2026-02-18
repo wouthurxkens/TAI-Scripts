@@ -12,36 +12,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
 
-      - name: Clone and Build ti-tools
-        run: |
-          git clone https://github.com/cqb13/ti-tools.git
-          cd ti-tools
-          cargo build --release
-          mv target/release/ti-tools ../ti-tools-bin
-          cd ..
+      - name: Install tivars library
+        run: pip install tivars
 
       - name: Create bin directory
         run: mkdir -p bin
 
       - name: Compile .txt to .8xp
         run: |
-          if [ -d "src" ]; then
-            # The nullglob prevents the loop from running if no .txt files exist
-            shopt -s nullglob
-            for file in src/*.txt; do
-              filename=$(basename "$file" .txt)
-              echo "Converting $file to bin/$filename.8xp..."
-              
-              # Using the 'convert' command per your help output
-              ./ti-tools-bin convert "$file" -o "bin/$filename.8xp"
-            done
-          else
-            echo "Directory ./src not found."
-            exit 1
-          fi
+          shopt -s nullglob
+          for file in src/*.txt; do
+            filename=$(basename "$file" .txt)
+            echo "Compiling $file..."
+            # Invokes the tokenizer directly to convert text to 8xp
+            python3 -m tivars.tokenizer "$file" -o "bin/$filename.8xp"
+          done
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
