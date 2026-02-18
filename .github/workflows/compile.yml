@@ -1,16 +1,16 @@
-name: Convert Text to TI-84 Programs
+name: Convert TXT to 8XP
 
 on:
   push:
-    branches: [ "main" ]
+    paths:
+      - 'src/**.txt'
   workflow_dispatch:
 
 jobs:
-  build:
+  convert:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -21,10 +21,10 @@ jobs:
       - name: Install tivars
         run: pip install tivars
 
-      - name: Convert files
+      - name: Run Conversion
         run: python convert.py
 
-      - name: Upload .8xp artifacts
+      - name: Upload Binaries
         uses: actions/upload-artifact@v4
         with:
           name: ti-programs
